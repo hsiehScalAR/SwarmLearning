@@ -12,6 +12,7 @@ class Swarm(object):
 		self.agent_ls = agent_ls
 		self.pos_ls = np.zeros((len(agent_ls),2))
 		self.n = len(agent_ls) #total number of agents
+		self.it = 0
 		
 	def move_swarm(self, swarm_file, save=0):
 			pos_str = (2*len(agent_ls))*[0]
@@ -23,11 +24,13 @@ class Swarm(object):
 			if save==1:
 				swarm_writer = csv.writer(swarm_file,delimiter = ',')
 				swarm_writer.writerow(pos_str)
+			self.it += 1
+			print "Iteration:", self.it
 
 if __name__ == '__main__':
 	# square initialization
-	init_pos = np.array([(np.random.random()*1500, np.random.random()*1500) for i in range(500)])
-	init_vel = np.array([10*(0.5-np.array([np.random.random(),np.random.random()])) for i in range(500)])
+	init_pos = np.array([(np.random.random()*1500, np.random.random()*1500) for i in range(100)])
+	init_vel = np.array([10*(0.5-np.array([np.random.random(),np.random.random()])) for i in range(100)])
 
 	# circular initialization
 	'''
@@ -47,21 +50,21 @@ if __name__ == '__main__':
 	'''
 	agent_ls = []
 	for i in range(len(init_pos)):
-		agent_ls.append(at.Agent(init_pos[i],init_vel[i]))
+		agent_ls.append(at.Agent(init_pos[i],init_vel[i],len(init_pos)))
 
 	swarm = Swarm(agent_ls)
 
 	# initializing animation parameters
 	fig = plt.figure()
-	ax = plt.axes(xlim=(-1000,3000),ylim=(-1000,3000))
+	ax = plt.axes(xlim=(-3000,3000),ylim=(-3000,3000))
 	dots = []
 	for i in range(len(swarm.agent_ls)):
 		dots.append(swarm.agent_ls[i])
 	d,= ax.plot([dot.pos[0] for dot in dots],[dot.pos[1] for dot in dots], c='0.5',marker='.',linestyle='None')
 
 	def animate(i):
-		with open('swarm_square_500_a10.csv',mode='a') as swarm_file:
-			swarm.move_swarm(swarm_file, 1)
+		with open('swarm_square_agent100_a5.csv',mode='a') as swarm_file:
+			swarm.move_swarm(swarm_file, 0)
 	    	d.set_data([dot.pos[0] for dot in dots],[dot.pos[1] for dot in dots])
 	    	return d,
 

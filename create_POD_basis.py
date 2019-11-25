@@ -1,22 +1,23 @@
 import numpy as np
 import csv_parser as cp
-
+from matplotlib import pyplot as plt
+from matplotlib import animation
 
 def calculate_POD_basis(snapshots):
     '''
     :param snapshots: snapshots imported as 2-D array of size (# of elements, # of snapshots)
     :return:
     '''
-    n_elmts = np.shape(snapshots)[0]
-    n_snapshots = np.shape(snapshots)[1]
+    n_elmts = np.shape(snapshots)[1]
+    n_snapshots = np.shape(snapshots)[0]
     # Calculate covariance matrix
     sum_UUT = np.matrix(np.zeros((n_elmts, n_elmts)))
     for t in range(n_snapshots):
-        U = snapshots[:, t]
+        U = snapshots[t, :]
         U = np.reshape(U, (n_elmts, 1))
         UUT = np.matmul(U, U.T)
         sum_UUT = sum_UUT + UUT
-    R = 1/n_snapshots * sum_UUT
+    R = 1.0/n_snapshots * sum_UUT
     K = R
     D, V = np.linalg.eig(K)
     V = V.real
@@ -52,9 +53,11 @@ def create_basis(V, D, energy):
     return phi.real
 
 
+
+
 if __name__ == '__main__':
     # Animating a single agent, assuming agents live on a 2D plane
-    pos_arr = cp.parse_csv('swarm_ring_500_a1.csv')
+    pos_arr = cp.parse_csv('swarm_square_agent100_a5.csv')
     pos_arr = np.array(pos_arr)
     x_coor = np.zeros([pos_arr.shape[0],pos_arr.shape[1]])
     y_coor = np.zeros([pos_arr.shape[0],pos_arr.shape[1]])
@@ -62,6 +65,12 @@ if __name__ == '__main__':
         for j in range(len(pos_arr[i])):
             x_coor[i][j] = pos_arr[i][j][0]
             y_coor[i][j] = pos_arr[i][j][0]
+    print y_coor.shape[0]
     basis_x = calculate_POD_basis(x_coor)
     basis_y = calculate_POD_basis(y_coor)
+
     print basis_y.shape
+
+    fig = plt.figure()
+    plt.plot(basis_y[:])
+    plt.show()

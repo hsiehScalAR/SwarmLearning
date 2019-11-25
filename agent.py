@@ -8,30 +8,35 @@ import math
 #a 0.25
 
 class Agent(object):
-	def __init__(self, pos, vel):
-		# initializing position with user input
+	def __init__(self, pos, vel, agent_count, coupling=5, delay=0, conn_num=20, conn_arr=[]):
 		self.pos = pos
-		# initialize velocity with randomized float numbers
 		self.vel = vel
-		#self.vel = 30*(np.array([np.random.normal(),np.random.normal()]))
-		#self.vel = np.array([0.0,0.0])
-		self.acc = self.update_acc(self.vel)
+		self.coupling = coupling
+		self.delay = delay
+		self.conn_num = conn_num
+		self.agent_count = agent_count
+		self.conn_arr = np.array(np.random.randint(0,agent_count,conn_num))
+		print self.conn_arr
+		self.acc = 0.0
 
-	def update_acc(self, vel, pos_ls=[2.0,1.0], a=10, delay=0):
-		agents_count = len(pos_ls)
-		#print "agent count: ", agents_count
-		f = (np.sum(np.tile(self.pos,(agents_count,1)),axis=0)-np.sum(pos_ls,axis=0))*a/(agents_count) #swarm coupling term
+	def update_acc(self, vel, pos_ls=[0.0, 1.0]):
+		#f = (np.sum(np.tile(self.pos,(self.agent_count,1)),axis=0)-
+		#	np.sum(pos_ls,axis=0))*self.coupling/(self.agent_count) #swarm coupling term
+		#Limited connectivity
+		f = (np.sum((np.tile(self.pos,(self.conn_num,1))),axis=0)-
+			np.sum(pos_ls[self.conn_arr],axis=0))*self.coupling/(self.conn_num) #swarm coupling term
 		#print "mean field: ", np.sum(pos_ls,axis=0)*a/(agents_count)
 		p = (1-np.dot(vel,vel))*vel #self-propulsion term
 		n = np.random.normal() #noise term
 		acc = p-f+n*1 #acceleration without delay term
 		return acc
 
+
 	def move_agent(self,pos_ls=[2.0,1.0]):
 		t_0 = time.time()
 		self.acc = self.update_acc(self.vel,pos_ls)
 		t_1 = time.time()
-		self.vel = self.vel+self.acc*(t_1-t_0)
+		self.vel = self.vel+self.acc*0.00005
 		self.pos = self.pos+self.vel
 		#print "vel: ", self.vel
 		#print "pos: ", self.pos
