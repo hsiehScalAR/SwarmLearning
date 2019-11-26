@@ -8,7 +8,7 @@ import math
 #a 0.25
 
 class Agent(object):
-	def __init__(self, pos, vel, agent_count, coupling=5, delay=0, conn_num=20, conn_arr=[]):
+	def __init__(self, pos, vel, agent_count, coupling=5, delay=0, conn_num=55, conn_arr=[]):
 		self.pos = pos
 		self.vel = vel
 		self.coupling = coupling

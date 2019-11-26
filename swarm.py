@@ -29,7 +29,7 @@ class Swarm(object):
 
 if __name__ == '__main__':
 	# square initialization
-	init_pos = np.array([(np.random.random()*1500, np.random.random()*1500) for i in range(100)])
+	init_pos = np.array([(np.random.random()*3000, np.random.random()*3000) for i in range(100)])
 	init_vel = np.array([10*(0.5-np.array([np.random.random(),np.random.random()])) for i in range(100)])
 
 	# circular initialization
@@ -56,14 +56,14 @@ if __name__ == '__main__':
 
 	# initializing animation parameters
 	fig = plt.figure()
-	ax = plt.axes(xlim=(-3000,3000),ylim=(-3000,3000))
+	ax = plt.axes(xlim=(-3000,5000),ylim=(-3000,5000))
 	dots = []
 	for i in range(len(swarm.agent_ls)):
 		dots.append(swarm.agent_ls[i])
 	d,= ax.plot([dot.pos[0] for dot in dots],[dot.pos[1] for dot in dots], c='0.5',marker='.',linestyle='None')
 
 	def animate(i):
-		with open('swarm_square_agent100_a5.csv',mode='a') as swarm_file:
+		with open('swarm_square_agent100_a10_conn20_it4000.csv',mode='a') as swarm_file:
 			swarm.move_swarm(swarm_file, 0)
 	    	d.set_data([dot.pos[0] for dot in dots],[dot.pos[1] for dot in dots])
 	    	return d,
@@ -72,3 +72,5 @@ if __name__ == '__main__':
 	anim = animation.FuncAnimation(fig, animate, frames=200, interval=20)
 
 	plt.show()
+
+
